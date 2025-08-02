@@ -1026,79 +1026,54 @@ def analyze_external_improvement_ideas(news_df, financial_data):
 # DART 출처 테이블 생성 함수 (개선된 버전)
 # ==========================
 def create_dart_source_table(dart_collector, collected_companies, analysis_year):
-    """🔗 깔끔한 DART 보고서 출처 표 생성 (개선된 버전)"""
+    """🔗 DART 보고서 출처 표 생성 (HTML 렌더링 수정)"""
     if not dart_collector or not dart_collector.source_tracking:
         return ""
         
-    table_html = """
-    <div style='margin-top: 25px; font-family: "Noto Sans KR", sans-serif;'>
-        <div style='background: linear-gradient(135deg, #E31E24 0%, #FF6B35 100%); color: white; padding: 12px 20px; border-radius: 8px 8px 0 0; margin-bottom: 0;'>
-            <h4 style='margin: 0; font-size: 16px; font-weight: 600;'>📊 DART 전자공시시스템 출처</h4>
-        </div>
-        <div style='background: white; border: 1px solid #e0e0e0; border-radius: 0 0 8px 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);'>
-            <table style='width: 100%; border-collapse: collapse; font-size: 13px;'>
-                <thead>
-                    <tr style='background: #f8f9fa; border-bottom: 2px solid #E31E24;'>
-                        <th style='padding: 12px 15px; text-align: left; border: none; font-weight: 600; color: #333;'>회사명</th>
-                        <th style='padding: 12px 15px; text-align: center; border: none; font-weight: 600; color: #333;'>보고서 종류</th>
-                        <th style='padding: 12px 15px; text-align: center; border: none; font-weight: 600; color: #333;'>분석 연도</th>
-                        <th style='padding: 12px 15px; text-align: center; border: none; font-weight: 600; color: #333;'>바로가기</th>
-                    </tr>
-                </thead>
-                <tbody>
-    """
+    # HTML 직접 생성 대신 st.dataframe 사용
+    source_data = []
     
-    for i, company in enumerate(collected_companies):
+    for company in collected_companies:
         source_info = dart_collector.source_tracking.get(company, {})
-        
-        # SK 회사는 특별 강조
-        row_bg = "background: rgba(227, 30, 36, 0.08);" if 'SK' in company else "background: #ffffff;"
-        company_style = "font-weight: 700; color: #E31E24;" if 'SK' in company else "font-weight: 500; color: #333;"
         
         report_type = source_info.get('report_type', '재무제표')
         rcept_no = source_info.get('rcept_no', 'N/A')
         
-        # 깔끔한 링크 생성
+        # 링크 생성
         if rcept_no and rcept_no != 'N/A':
-            dart_link = f"https://dart.fss.or.kr/dsaf001/main.do?rcpNo={rcept_no}"
-            link_text = "🔗 보기"
-            link_style = "background: #E31E24; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-weight: 500; font-size: 11px;"
+            dart_url = f"https://dart.fss.or.kr/dsaf001/main.do?rcpNo={rcept_no}"
         else:
-            dart_link = "https://dart.fss.or.kr"
-            link_text = "🔗 DART"
-            link_style = "background: #6c757d; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-weight: 500; font-size: 11px;"
+            dart_url = "https://dart.fss.or.kr"
         
-        # 번갈아가는 행 배경색
-        if i % 2 == 0:
-            row_bg = "background: #f8f9fa;" if 'SK' not in company else "background: rgba(227, 30, 36, 0.08);"
-        else:
-            row_bg = "background: #ffffff;" if 'SK' not in company else "background: rgba(227, 30, 36, 0.12);"
+        source_data.append({
+            '회사명': company,
+            '보고서종류': report_type,
+            '연도': analysis_year,
+            'DART링크': dart_url
+        })
+    
+    if source_data:
+        df = pd.DataFrame(source_data)
         
-        table_html += f"""
-                    <tr style='{row_bg}'>
-                        <td style='padding: 12px 15px; text-align: left; border: none; {company_style}'>{company}</td>
-                        <td style='padding: 12px 15px; text-align: center; border: none; color: #666;'>{report_type}</td>
-                        <td style='padding: 12px 15px; text-align: center; border: none; color: #666; font-weight: 500;'>{analysis_year}</td>
-                        <td style='padding: 12px 15px; text-align: center; border: none;'>
-                            <a href='{dart_link}' target='_blank' style='{link_style}'>{link_text}</a>
-                        </td>
-                    </tr>
-        """
-    
-    table_html += """
-                </tbody>
-            </table>
-            <div style='background: #f8f9fa; padding: 12px 20px; border-top: 1px solid #e0e0e0;'>
-                <p style='margin: 0; font-size: 11px; color: #666; font-style: italic;'>
-                    💡 <strong>금융감독원 전자공시시스템</strong>에서 제공하는 공식 재무제표 데이터입니다. 
-                    <a href='https://dart.fss.or.kr' target='_blank' style='color: #E31E24; text-decoration: none;'>https://dart.fss.or.kr</a>
-                </p>
-            </div>
-        </div>
-    </div>
-    """
-    
-    return table_html
+        # Streamlit 표로 표시
+        st.subheader("📊 DART 전자공시시스템 출처")
+        st.dataframe(
+            df,
+            use_container_width=True,
+            column_config={
+                "DART링크": st.column_config.LinkColumn(
+                    "🔗 DART 바로가기",
+                    help="클릭하면 해당 보고서로 이동합니다",
+                    validate="^https://dart\.fss\.or\.kr.*",
+                    max_chars=50,
+                    display_text="🔗 보기"
+                )
+            }
+        )
+        
+        st.caption("💡 금융감독원 전자공시시스템(https://dart.fss.or.kr)에서 제공하는 공식 재무제표 데이터입니다.")
+        
+    return ""  # HTML 반환하지 않음
 
 # ==========================
 # SK 테마 RSS 뉴스 수집 클래스
@@ -3168,6 +3143,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
