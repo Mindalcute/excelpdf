@@ -1064,7 +1064,7 @@ def create_dart_source_table(dart_collector, collected_companies, analysis_year)
                 "DART링크": st.column_config.LinkColumn(
                     "🔗 DART 바로가기",
                     help="클릭하면 해당 보고서로 이동합니다",
-                    validate="^https://dart\.fss\.or\.kr.*",
+                    validate=r"^https://dart\.fss\.or\.kr.*",
                     max_chars=50,
                     display_text="🔗 보기"
                 )
@@ -3143,6 +3143,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
