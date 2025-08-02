@@ -1,0 +1,10 @@
+streamlit
+pandas
+requests
+plotly
+beautifulsoup4
+reportlab
+wordcloud
+matplotlib
+feedparser
+openpyxl
