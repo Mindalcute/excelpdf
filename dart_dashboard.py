@@ -2414,7 +2414,7 @@ def create_enhanced_pdf_report(merged_df, collected_companies, analysis_year, ch
 
 
     def save_chart_as_image(fig, filename):
-    """차트를 이미지로 저장 (Streamlit Cloud 최적화)"""
+        """차트를 이미지로 저장 (Streamlit Cloud 최적화)"""
         if fig is None:
             return None
     
@@ -3143,6 +3143,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
