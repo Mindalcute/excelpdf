@@ -2177,6 +2177,12 @@ def create_enhanced_pdf_report(merged_df, collected_companies, analysis_year, ch
             "C:/Windows/Fonts/malgunbd.ttf",   # 맑은 고딕 Bold
             "C:/Windows/Fonts/gulim.ttc", 
             "/System/Library/Fonts/AppleGothic.ttf",
+            # Linux (Streamlit Cloud) 경로 추가
+            "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",
+            "/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf", 
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",     # 폴백용
+            # Mac 경로
+            "/System/Library/Fonts/AppleGothic.ttf"
         ]
         
         korean_font_registered = False
@@ -3122,4 +3128,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
