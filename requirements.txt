@@ -1,11 +1,11 @@
 streamlit
 pandas
 requests
-plotly
+plotly==5.17.0
 beautifulsoup4
 reportlab
 wordcloud
 matplotlib
 feedparser
 openpyxl
-kaleido  
+kaleido==0.2.1
