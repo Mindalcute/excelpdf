@@ -2188,15 +2188,34 @@ def create_enhanced_pdf_report(merged_df, collected_companies, analysis_year, ch
         korean_font_registered = False
         bold_font_registered = False
         
-        # 일반 폰트 등록
+
         for font_path in font_paths:
-            if 'malgunbd' not in font_path and os.path.exists(font_path):
+            if os.path.exists(font_path):
                 try:
+                    # 일반 폰트 등록
                     pdfmetrics.registerFont(TTFont('KoreanFont', font_path))
                     korean_font_registered = True
+                    st.write(f"✅ 한글 폰트 등록 성공: {font_path}")
                     break
-                except:
+                except Exception as e:
+                    st.write(f"❌ 폰트 등록 실패: {font_path} - {e}")
                     continue
+        
+        # 폰트 등록 실패 시 폴백 처리
+        if not korean_font_registered:
+            st.warning("⚠️ 한글 폰트를 찾을 수 없어 기본 폰트를 사용합니다.")
+            # 기본 폰트를 한글 폰트로 설정
+            normal_style = ParagraphStyle(
+                'KoreanNormal',
+                parent=styles['Normal'],
+                fontSize=11,
+                leading=14,
+                spaceAfter=8,
+                fontName='Helvetica'  # 기본 폰트 사용
+            )        
+
+
+
         
         # Bold 폰트 등록
         bold_paths = ["C:/Windows/Fonts/malgunbd.ttf"]
@@ -3128,5 +3147,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
