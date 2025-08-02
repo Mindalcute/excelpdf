@@ -79,9 +79,12 @@ except ImportError:
 
 st.set_page_config(page_title="SK에너지 경쟁사 분석 대시보드", page_icon="⚡", layout="wide")
 
-# API 키 설정
-DART_API_KEY = "9a153f4344ad2db546d651090f78c8770bd773cb"
-
+try:
+    DART_API_KEY = st.secrets["DART_API_KEY"]
+except:
+    st.error("🚨 API 키가 설정되지 않았습니다. Streamlit Secrets에서 DART_API_KEY를 설정해주세요.")
+    st.stop()
+    
 # SK 브랜드 컬러 테마
 SK_COLORS = {
     'primary': '#E31E24',      # SK 레드
@@ -3147,3 +3150,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
