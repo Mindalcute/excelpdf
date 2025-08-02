@@ -550,7 +550,8 @@ class DartAPICollector:
         except Exception as e:
             st.error(f"종목코드 변환 오류: {e}")
             return None
-    
+            
+    @st.cache_data(ttl=3600)
     def get_company_financials_auto(self, company_name, bsns_year):
         """회사 재무제표 자동 수집 (출처 추적 포함)"""
         
@@ -738,7 +739,8 @@ class SKFinancialDataProcessor:
         # SK 중심 경쟁사 정의
         self.sk_company = "SK에너지"
         self.competitors = ["GS칼텍스", "현대오일뱅크", "S-Oil"]
-    
+        
+    @st.cache_data
     def process_dart_data(self, dart_df, company_name):
         """DART API에서 받은 DataFrame을 표준 손익계산서로 변환 (XBRL 마이너스 값 정확 처리)"""
         try:
@@ -3147,6 +3149,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
