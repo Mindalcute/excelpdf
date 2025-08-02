@@ -1,5 +1,4 @@
 fonts-nanum
-fonts-nanum-coding
+fonts-nanum-coding  
 fonts-nanum-extra
-chromium-browser
-xvfb
+# chromium-browser 제거 (설치 안됨)
