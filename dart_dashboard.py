@@ -2434,18 +2434,31 @@ def create_enhanced_pdf_report(merged_df, collected_companies, analysis_year, ch
     doc.build(story)
     buffer.seek(0)
     return buffer.getvalue()
+    
+    
 
-def save_chart_as_image(fig, filename):
-    """차트를 이미지로 저장"""
-    if fig is None:
-        return None
+
+    def save_chart_as_image(fig, filename):
+    """차트를 이미지로 저장 (Streamlit Cloud 최적화)"""
+        if fig is None:
+            return None
     
     try:
-        img_bytes = fig.to_image(format="png", width=800, height=600)
+        # 1차 시도: kaleido 엔진
+        img_bytes = fig.to_image(format="png", width=800, height=600, engine="kaleido")
         return img_bytes
     except Exception as e:
-        st.warning(f"차트 이미지 저장 실패: {e}")
-        return None
+        try:
+            # 2차 시도: 브라우저 없는 모드
+            import plotly.io as pio
+            pio.kaleido.scope.default_scale = 1
+            img_bytes = fig.to_image(format="png", width=800, height=600)
+            return img_bytes
+        except Exception as e2:
+            # 3차 시도: HTML → 이미지 변환 (폴백)
+            st.warning(f"차트 이미지 변환 실패: {e2}")
+            return None
+
 
 # ==========================
 # 파일 생성 함수들
@@ -3155,5 +3168,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
