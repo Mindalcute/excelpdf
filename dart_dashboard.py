@@ -2201,10 +2201,15 @@ def create_enhanced_pdf_report(merged_df, collected_companies, analysis_year, ch
     try:
         # 한글 폰트 강제 등록
         font_paths = [
-            "C:/Windows/Fonts/malgun.ttf",     # 맑은 고딕
-            "C:/Windows/Fonts/malgunbd.ttf",   # 맑은 고딕 Bold
-            "C:/Windows/Fonts/gulim.ttc", 
-            "/System/Library/Fonts/AppleGothic.ttf",
+            # Windows
+            "C:/Windows/Fonts/malgun.ttf",
+            "C:/Windows/Fonts/malgunbd.ttf", 
+            # Linux (Streamlit Cloud)
+            "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",
+            "/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf",
+            "/opt/conda/lib/python3.9/site-packages/matplotlib/mpl-data/fonts/ttf/NanumGothic.ttf",
+            # 폴백용 (기본 폰트)
+            "/System/Library/Fonts/Helvetica.ttc"
         ]
         
         korean_font_registered = False
@@ -3150,4 +3155,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
